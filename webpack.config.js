@@ -260,7 +260,7 @@ const config = {
     new HtmlWebpackPlugin({
       // inject: false,
       //hash: true,
-      template: 'index.html',
+      template: path.join(__dirname, 'public/index.html'),
       filename: 'index.html',
       minify:{
         collapseWhitespace: env === 'development' ? 'false' : 'true', 
@@ -340,7 +340,7 @@ if (isProduction) {
 }),
  );
 
- config[optimization]= {
+ config.optimization= {
    minimize:true,
    usedExports: true,
  
