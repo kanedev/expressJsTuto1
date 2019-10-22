@@ -1,27 +1,32 @@
 const express = require('express');
-const path = require('path')
+const path = require('path');
 
-//app.use(express.static('../../public'));
 const app = express(),
             DIST_DIR = path.join(__dirname, '../../public'),
             HTML_FILE = path.join(DIST_DIR, 'index.html')
             
 app.use(express.static(DIST_DIR))
-app.get('*', (req, res) => {
-    res.sendFile(HTML_FILE)
-})
-
-// app.get('/index.html', (req, res) => {
-//      res.send('Coucou');
-//      req.param(name='walid');
-    
-//  });
 
 
-app.get('/', (req, res) => {
-    res.send('Hello World 2!');
-});
-let port = 8000;
+
+const mockResponse = {
+    foo: 'bar',
+    bar: 'foo'
+  };
+
+  app.get('/api', (req, res) => {
+    res.send(mockResponse);
+  });
+  app.get('/', (req, res) => {
+    res.sendFile(HTML_FILE); // EDIT
+  });
+
+
+
+
+
+
+let port = 4000;
 app.listen(port, () => {
     console.log('Example app listening on port http://localhost:'+port);
 });

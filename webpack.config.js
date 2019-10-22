@@ -32,7 +32,8 @@ const config = {
   context: path.resolve(__dirname, 'src'),
   entry:
   {
-    appjs: './js/index.js',
+    appjs: ['babel-polyfill', './js/index.js'],
+
   //  main: './js/main.ts',
   //  another: './js/another-module.ts',
    maincss: './assets/scss/main.scss',
@@ -55,7 +56,10 @@ const config = {
   //  hot: true,
     // inline: true,
     // host: '0.0.0.0',
-    port: 1111,
+    port: 5000,
+    proxy: {
+      '/api': 'http://localhost:4000'
+    },
     watchContentBase: true,
     //stats: 'errors-only',
     overlay: true,
@@ -68,7 +72,7 @@ const config = {
     rules: [
       //babel-loader    
         {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         include: [
           path.resolve(__dirname, 'src')
         ],
@@ -316,7 +320,7 @@ const config = {
   ],
 
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.jsx'],
     alias: {
       'jquery': 'jquery/dist/jquery.slim.min.js',
       'popper': 'popper.js/dist/umd/popper.min.js',
