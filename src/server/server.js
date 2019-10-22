@@ -15,10 +15,22 @@ const mockResponse = {
   };
 
   app.get('/api', (req, res) => {
-    res.send(mockResponse);
+   // res.send(mockResponse);
+
+let response={
+  firstName : req.query.nom ,
+  lastName : req.query.prenom
+}
+
+res.send('<p>' + req.query.nom +' ' + req.query.prenom + '</p>')
+res.send(JSON.stringify(response));
+
   });
+
+
   app.get('/', (req, res) => {
-    res.sendFile(HTML_FILE); // EDIT
+   // res.sendFile(HTML_FILE); // EDIT
+    // res.redirect('http://localhost:5000/');
   });
 
 
