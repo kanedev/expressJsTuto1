@@ -88,6 +88,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.123",
     "babel-polyfill": "^6.26.0",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
     "cookie-parser": "^1.4.4",

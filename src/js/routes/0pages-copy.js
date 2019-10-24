@@ -2,23 +2,9 @@ const router = require('express').Router()
 // Models
 const User = require('../models/user')
 
-const express = require('express');
-const path = require('path');
-
-const app = express(),
-            DIST_DIR = path.join(__dirname, '../../public'),
-            HTML_FILE = path.join(DIST_DIR, 'index.html')
-            
-app.use(express.static(DIST_DIR))
-
-
-
-
 // Static Pages ================================================================
 router.get('/', function(req, res, next) {
-   // res.render('index')
-   res.sendFile(HTML_FILE )
-
+    res.render('index')
 })
 
 router.get('/member', function(req, res, next) {

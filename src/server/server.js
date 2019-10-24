@@ -15,38 +15,6 @@ app.use(express.static(DIST_DIR))
 
 
 
-// MongoDB driver
-const mongoose = require('mongoose');
-const DB_URI= "mongodb://localhost:27017/myproject"
-
-// Connect to MongoDB
-mongoose.connect(DB_URI,{ useNewUrlParser: true, useUnifiedTopology: true } )
-// connectioin events
-mongoose.connection.once('connected', () => {
-  console.log("Database connected to " + DB_URI)
-})
-
-mongoose.connection.on('error', () => {
-  console.log("MongoDB connection error ")
-})
-mongoose.connection.once('disconnected', () => {
-  console.log("Database disconnected ")
-})
-
-// If Node's process ends, close the MongoDB connection
-
-process.on('SIGINT',() => {
-  mongoose.connection.close(() => {
-      console.log("Database disconnected through app termination")
-      process.exit(0)
-    }
-    
-  )
-}
-
-)
-
-
  app.use(logger('dev'));
  app.use(express.json());
  app.use(express.urlencoded({ extended: false }));
@@ -97,25 +65,29 @@ process.on('SIGINT',() => {
 //  });
 
 
-// Routes =========================================
-//app.use('/api', require('../js/routes/posts'));
-//app.use('/api', require('../js/routes/pages'));
+// Routes ----------------------------------------------
+app.use('/api/posts', require('../js/routes/api-posts'))
+//app.use('/auth', 	  require('../js/routes/auth'))
+app.use('/', 		  require('../js/routes/pages'))
+// -----------------------------------------------------
+
 
 //app.use('/api', );
-
+//app.use('/test',require('../js/test'))
 app.get('/api', (req, res) => {
   res.send('<p>' + req.query.nom +' ' + req.query.prenom + '</p>')
+ //res.send('test');
    // res.redirect('http://localhost:5000/');
 //res.render(HTML_FILE);
 
  });
 
- app.get('/', (req, res) => {
-  res.sendFile(HTML_FILE); // EDIT
-   // res.redirect('http://localhost:5000/');
-//res.render(HTML_FILE);
+//  app.get('/', (req, res) => {
+//   res.sendFile(HTML_FILE); // EDIT
+//    // res.redirect('http://localhost:5000/');
+// //res.render(HTML_FILE);
 
- });
+//  });
 
 
 // catch 404 and forward to error handler

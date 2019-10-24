@@ -1,6 +1,4 @@
 {
-    "watch": ["src/server/"],
-    "events": {
-      "restart": "Kill -9 $(lsof -ti :4000)"
-      }
+    "watch": ["src/"]
+  
   }
