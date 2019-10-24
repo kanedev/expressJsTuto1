@@ -1,23 +1,71 @@
 const express = require('express');
 var createError = require('http-errors');
 const path = require('path');
-//const bodyPar= require('body-parser');
-//let urlEncoded= bodyPar.urlencoded({extended:false});
+const bodyParser= require('body-parser');
+let urlencoded= bodyParser.urlencoded({extended:false});
 const logger = require('morgan');
 
 
 const app = express(),
             DIST_DIR = path.join(__dirname, '../../public'),
             HTML_FILE = path.join(DIST_DIR, 'index.html')
-            
+// Serve Static Files from /public            
 app.use(express.static(DIST_DIR))
 
 
 
-
+// Middlewares
  app.use(logger('dev'));
- app.use(express.json());
- app.use(express.urlencoded({ extended: false }));
+ app.use(bodyParser.json())
+ app.use(bodyParser.urlencoded({ extended: true }))
+
+
+// MongoDB driver
+const mongoose = require('mongoose');
+const DB_URI= "mongodb://localhost:27017/myproject"
+
+
+// Connect to MongoDB
+mongoose.connect(DB_URI,{ useNewUrlParser: true, useUnifiedTopology: true } )
+mongoose.set('useCreateIndex', true);
+// connectioin events
+mongoose.connection.once('connected', () => {
+  console.log("Database connected to " + DB_URI)
+})
+
+mongoose.connection.on('error', () => {
+  console.log("MongoDB connection error ")
+})
+mongoose.connection.once('disconnected', () => {
+  console.log("Database disconnected ")
+})
+
+// If Node's process ends, close the MongoDB connection
+process.on('SIGINT',() => {
+  mongoose.connection.close(() => {
+      console.log("Database disconnected through app termination")
+      process.exit(0)
+    }
+    
+  )
+}
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+ //app.use(express.json());
+ //app.use(express.urlencoded({ extended: false }));
 // GET request with params
 // app.get('/products/:d', (req, res) => {
 //   let id = req.params.id
@@ -65,12 +113,12 @@ app.use(express.static(DIST_DIR))
 //  });
 
 
+
 // Routes ----------------------------------------------
 app.use('/api/posts', require('../js/routes/api-posts'))
 //app.use('/auth', 	  require('../js/routes/auth'))
 app.use('/', 		  require('../js/routes/pages'))
 // -----------------------------------------------------
-
 
 //app.use('/api', );
 //app.use('/test',require('../js/test'))
@@ -90,23 +138,21 @@ app.get('/api', (req, res) => {
 //  });
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// // catch 404 and forward to error handler
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// // error handler
+// app.use(function(err, req, res, next) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-
+//   // render the error page
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
 
 
 

@@ -58,9 +58,9 @@ const config = {
     // host: '0.0.0.0',
     port: 5000,
     proxy: {
-      "**": 'http://localhost:4000',
-      "secure": false,
-      "changeOrigin": true
+      "*": 'http://localhost:4000',
+      //"secure": false,
+      //"changeOrigin": true
       //'/contact': 'http://localhost:4000',
     },
     watchContentBase: true,

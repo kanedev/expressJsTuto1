@@ -13,7 +13,7 @@ let postSchema = new mongoose.Schema({
         content: {type: String, default: ""}
     }],
     // Store an id (ObjectId) of a "User" model
-    author: {type: Schema.Types.ObjectId, ref: "User"}
+  //  author: {type: Schema.Types.ObjectId, ref: "User"}
     // _id by default is instered
 })
 
