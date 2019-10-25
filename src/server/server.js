@@ -5,6 +5,10 @@ const bodyParser= require('body-parser');
 let urlencoded= bodyParser.urlencoded({extended:false});
 const logger = require('morgan');
 
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const passport = require('passport')
+
 
 const app = express(),
             DIST_DIR = path.join(__dirname, '../../public'),
@@ -13,11 +17,6 @@ const app = express(),
 app.use(express.static(DIST_DIR))
 
 
-
-// Middlewares
- app.use(logger('dev'));
- app.use(bodyParser.json())
- app.use(bodyParser.urlencoded({ extended: true }))
 
 
 // MongoDB driver
@@ -51,6 +50,44 @@ process.on('SIGINT',() => {
 }
 
 )
+
+// Middlewares
+app.use(logger('dev'));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(session({
+  name: 'sessionId',
+  secret: "mysecretkeythatiwillnottellyou",
+  saveUninitialized: false, // don't create sessions for not logged in users (express-session)
+  resave: false, //don't save session if unmodified
+  
+  // Where to store session data
+  store: new MongoStore({
+      mongooseConnection: mongoose.connection,
+      ttl: 14 * 24 * 60 * 60 // = 14 days. ttl means "time to live" (expiration in seconds)
+  }),
+
+  // cookies settings
+  cookie: {
+    secure: false,  
+    httpOnly: false, // if true, will disallow JavaScript from reading cookie data
+    expires: new Date(Date.now() + 60 * 60 * 1000) // 1 hour;
+  }
+}))
+// Passport Config
+require('../js/config/passport')(passport); // pass passport for configuration
+// Passport init (must be after establishing the session above)
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+
+// Pass 'req.user' as 'user' to ejs templates
+// Just a custom middleware
+app.use(function(req, res, next) {
+res.locals.user = req.user || null;
+// res.locals is an object available to ejs templates. for example: <%= user %>
+next();
+})
 
 
 
@@ -116,7 +153,7 @@ process.on('SIGINT',() => {
 
 // Routes ----------------------------------------------
 app.use('/api/posts', require('../js/routes/api-posts'))
-//app.use('/auth', 	  require('../js/routes/auth'))
+app.use('/auth', 	  require('../js/routes/auth'))
 app.use('/', 		  require('../js/routes/pages'))
 // -----------------------------------------------------
 
