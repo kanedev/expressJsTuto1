@@ -269,6 +269,7 @@ const config = {
       //hash: true,
       template: path.join(__dirname, 'public/index.html'),
       filename: 'index.html',
+      
       minify:{
         collapseWhitespace: env === 'development' ? 'false' : 'true', 
         removeComments: env === 'development' ? 'false' : 'true', 
